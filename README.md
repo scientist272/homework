@@ -5,7 +5,7 @@
   前端：jquery+bootstrap
   
 ## **运行说明：**
-1.  在本地mysql数据库新建一个叫url的数据库，数据库端口需要为3306，在这个数据库中导入github上的sql文件
+1.  在本地mysql数据库新建一个叫url的数据库，数据库端口需要为3306，在这个数据库中导入github上的sql文件。用户名和密码均需要为root，编码方式为utf-8
 
 3. 在idea中导入项目，运行HomeworkApplication主函数
 
