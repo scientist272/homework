@@ -1,0 +1,134 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- 可选的Bootstrap主题文件（一般不使用） -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"></script>
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="span12">
+            <h3 class="text-center text-info">
+                <strong>长链短链转换工具</strong>
+            </h3>
+            <div class="tabbable" id="tabs-121407">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a data-toggle="tab" href="#panel-596350">长链接转短链接</a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#panel-208602">短链接还原</a>
+                    </li>
+                </ul>
+                <br/>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="panel-596350">
+                        <div class="input-group">
+                            <span class="input-group-addon">输入长链接</span>
+                            <input type="text" class="form-control" id="longUrl">
+                            <span class="input-group-addon">输入key</span>
+                            <input type="text" class="form-control" id="md5Key">
+                        </div>
+                        <br/>
+                        <div class="tab-pane active">
+                            <button class="btn btn-info btn-sm" type="submit" id="submitLong">提交</button>
+                            <span id="submit1"></span>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="panel-208602">
+                        <div class="input-group">
+                            <span class="input-group-addon">输入短链接</span>
+                            <input type="text" class="form-control" id="shortUrl">
+                        </div>
+                        <br/>
+                        <div class="tab-pane active">
+                            <button class="btn btn-info btn-sm" type="submit" id="submitShort">提交</button>
+                            <span id="submit2"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    $(document).ready(function () {
+        $("#submitLong").click(function () {
+            var longUrl = $("#longUrl").val();
+            var md5Key = $("#md5Key").val();
+            var data = {
+                "longUrl": longUrl,
+                "md5Key": md5Key
+            };
+            if(longUrl!=""&&md5Key!=""){
+                $.ajax({
+
+                    type: "post",
+                    url: "/url/shortUrl",
+                    contentType: "application/json;charset=utf-8",//这里很重要，不能省略，因为默认的类型是application/x-www-form-urlencoded,如果不设置的话后台就无法使用@RequestBody正常接收
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    success: function (data) {
+
+                        //响应成功后回调的函数，data是来自服务器的数据
+                        alert("转换成功！");
+                        $("#submit1").empty();
+                        $("#submit1").addClass("text-primary");
+                        $("#submit1").append("生成的短链接为: "+data.shortUrl+" 复制到浏览器中即可访问");
+
+                    },
+                    error: function () {
+                        //出错时回调该函数
+                        alert("error");
+                    }
+
+                });
+            }
+            else{
+                alert("长链接和key不能为空")
+            }
+
+
+        })
+
+        $("#submitShort").click(function () {
+            var shortUrl = $("#shortUrl").val();
+            var data = {
+                "shortUrl": shortUrl
+            };
+
+            $.ajax({
+
+                type: "post",
+                url: "/url/longUrl",
+                contentType: "application/json;charset=utf-8",//这里很重要，不能省略，因为默认的类型是application/x-www-form-urlencoded,如果不设置的话后台就无法使用@RequestBody正常接收
+                data: JSON.stringify(data),
+                dataType: "json",//这里声明收到的服务器的响应数据类型，如果是json的话，不声明也可以正常使用
+                success: function (data) {
+
+                    //响应成功后回调的函数，data是来自服务器的数据
+                    alert("转换成功！");
+                    $("#submit2").empty();
+                    $("#submit2").addClass("text-primary");
+                    $("#submit2").append("还原后的长链接为: "+data.longUrl+" 该短链接访问次数："+data.count);
+                },
+                error: function () {
+                    //出错时回调该函数
+                    alert("error");
+                }
+
+            });
+        })
+    })
+</script>
+</html>
